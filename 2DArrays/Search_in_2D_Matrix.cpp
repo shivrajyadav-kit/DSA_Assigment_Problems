@@ -14,7 +14,7 @@ int main(){
 		for(int j=0;j<m;j++){
 			if(a[i][j]==x){
 				found=true;
-				break;
+				break;  
 			}
 		}
 	}
