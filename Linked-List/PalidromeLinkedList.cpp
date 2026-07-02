@@ -16,25 +16,22 @@ class LinkedList {
 public:
 
     Node* head;
-    Node* tail;
-    vector<Node*> nodes;
 
     LinkedList()
     {
         head = nullptr;
-        tail = nullptr;
     }
 
     void build(int n)
     {
+        Node* tail = nullptr;
+
         for(int i = 0; i < n; i++)
         {
             int x;
             cin >> x;
 
             Node* node = new Node(x);
-
-            nodes.push_back(node);
 
             if(!head)
             {
@@ -49,27 +46,45 @@ public:
     }
 };
 
-Node* detectCycle(Node* head)
-{
-    auto slow = head;
-    auto fast = head;
+Node* reverseList(Node* head){
+    Node* prev =  NULL;
+    auto cur = head;
 
-    while(fast && fast->next){
+    while(cur != NULL){
+        auto next = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = next;
+    } 
+    return prev;
+}
+
+
+bool isPalindrome(Node* head)
+{
+    if(head == NULL || head->next == NULL) return true;
+
+    auto slow = head;
+    auto fast = head->next;
+
+    while(fast != NULL and fast->next !=  NULL){
         slow = slow->next;
         fast = fast->next->next;
 
-        if(slow == fast){
-            slow = head;
+    }
+    auto second = reverseList(slow->next);
 
-            while(slow != fast){
-            slow = slow->next;
-            fast = fast->next;
-        }
-        return slow;
+    auto first = head;
+
+    while(second){
+        if(first->val != second->val) return false;
+
+            first = first->next;
+            second = second->next;
     }
-    }
-    return NULL;
+    return true;
 }
+
 
 int main()
 {
@@ -83,26 +98,7 @@ int main()
 
     ll.build(n);
 
-    int pos;
-    cin >> pos;
-
-    if(pos != -1)
-        ll.tail->next = ll.nodes[pos];
-
-    Node* ans = detectCycle(ll.head);
-
-    int idx = -1;
-
-    for(int i = 0; i < n; i++)
-    {
-        if(ll.nodes[i] == ans)
-        {
-            idx = i;
-            break;
-        }
-    }
-
-    cout << idx << '\n';
+    cout << (isPalindrome(ll.head) ? "true" : "false") << '\n';
 
     return 0;
 }

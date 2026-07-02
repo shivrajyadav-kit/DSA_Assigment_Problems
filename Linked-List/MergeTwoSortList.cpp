@@ -46,50 +46,30 @@ public:
     }
 };
 
-Node* reverseList(Node* head){
-    Node* prev = NULL;
-    auto cur = head;
-
-    while(cur != NULL){
-        auto next = cur->next;
-        cur->next = prev;
-        prev = cur;
-        cur = next;
-    }
-
-    return prev;
-}
-
-
-Node* reverseKGroup(Node* head, int k)
+Node* mergeTwoLists(Node* l1, Node* l2)
 {
-    Node* dummy = new Node(-1);
+    auto dummy = new Node(-1);
     auto tail = dummy;
 
-    auto ptr = head;
+    auto ptr1 = l1;
+    auto ptr2 = l2;
 
-    while(ptr != NULL){
-        auto end = ptr;
-        for(int i =1;i<=k -1; i++){
-            end = end->next;
-            if(end == NULL){
-                tail->next = ptr;
-                return dummy->next;
-            }
+    while(ptr1 != NULL and ptr2 != NULL){
+        if(ptr1->val < ptr2->val){
+            tail->next = ptr1;
+            tail = ptr1;
+            ptr1 = ptr1->next;
+        }else{
+            tail->next = ptr2;
+            tail = ptr2;
+            ptr2 = ptr2->next;
         }
-        auto nextStart = end->next;
-        end->next = NULL;
-
-
-        reverseList(ptr);
-        tail->next = end;
-        tail = ptr;
-
-        ptr = nextStart;
     }
 
-    return dummy->next;
+    if(ptr1 != NULL) tail->next = ptr1;
+    if(ptr2 != NULL) tail->next = ptr2;
 
+    return dummy->next;
 }
 
 int main()
@@ -97,19 +77,21 @@ int main()
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int n;
-    cin >> n;
+    int n1;
+    cin >> n1;
 
-    LinkedList ll;
+    LinkedList a;
+    a.build(n1);
 
-    ll.build(n);
+    int n2;
+    cin >> n2;
 
-    int k;
-    cin >> k;
+    LinkedList b;
+    b.build(n2);
 
-    ll.head = reverseKGroup(ll.head, k);
+    Node* head = mergeTwoLists(a.head, b.head);
 
-    Node* cur = ll.head;
+    Node* cur = head;
 
     bool first = true;
 

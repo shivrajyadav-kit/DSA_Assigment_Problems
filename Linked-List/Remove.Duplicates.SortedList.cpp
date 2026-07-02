@@ -16,25 +16,22 @@ class LinkedList {
 public:
 
     Node* head;
-    Node* tail;
-    vector<Node*> nodes;
 
     LinkedList()
     {
         head = nullptr;
-        tail = nullptr;
     }
 
     void build(int n)
     {
+        Node* tail = nullptr;
+
         for(int i = 0; i < n; i++)
         {
             int x;
             cin >> x;
 
             Node* node = new Node(x);
-
-            nodes.push_back(node);
 
             if(!head)
             {
@@ -49,26 +46,31 @@ public:
     }
 };
 
-Node* detectCycle(Node* head)
+
+Node* deleteDuplicates(Node* head)
 {
-    auto slow = head;
-    auto fast = head;
+    auto dummy = new Node(101);
+    auto tail = dummy;
 
-    while(fast && fast->next){
-        slow = slow->next;
-        fast = fast->next->next;
+    auto ptr = head;
+    while(ptr != NULL){
 
-        if(slow == fast){
-            slow = head;
-
-            while(slow != fast){
-            slow = slow->next;
-            fast = fast->next;
+        if(tail->val != ptr->val){
+            tail->next = ptr;
+            tail = ptr;
+            ptr = ptr->next;
+        }else{
+            auto temp = ptr->next;
+            delete ptr;
+            ptr = temp;
         }
-        return slow;
     }
-    }
-    return NULL;
+    tail->next = NULL;
+
+
+    head = dummy->next;
+    delete dummy;
+    return head;
 }
 
 int main()
@@ -83,26 +85,27 @@ int main()
 
     ll.build(n);
 
-    int pos;
-    cin >> pos;
+    ll.head = deleteDuplicates(ll.head);
 
-    if(pos != -1)
-        ll.tail->next = ll.nodes[pos];
+    Node* cur = ll.head;
 
-    Node* ans = detectCycle(ll.head);
+    bool first = true;
 
-    int idx = -1;
-
-    for(int i = 0; i < n; i++)
+    while(cur)
     {
-        if(ll.nodes[i] == ans)
+        if(!first)
         {
-            idx = i;
-            break;
+            cout << ' ';
         }
+
+        first = false;
+
+        cout << cur->val;
+
+        cur = cur->next;
     }
 
-    cout << idx << '\n';
+    cout << '\n';
 
     return 0;
 }

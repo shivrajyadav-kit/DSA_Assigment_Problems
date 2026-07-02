@@ -49,7 +49,6 @@ public:
 Node* reverseList(Node* head){
     Node* prev = NULL;
     auto cur = head;
-
     while(cur != NULL){
         auto next = cur->next;
         cur->next = prev;
@@ -60,35 +59,36 @@ Node* reverseList(Node* head){
     return prev;
 }
 
-
-Node* reverseKGroup(Node* head, int k)
+void reorderList(Node* head)
 {
-    Node* dummy = new Node(-1);
-    auto tail = dummy;
+    if(head == NULL || head->next == NULL) return;
 
-    auto ptr = head;
+    auto slow = head;
+    auto fast = head->next;
 
-    while(ptr != NULL){
-        auto end = ptr;
-        for(int i =1;i<=k -1; i++){
-            end = end->next;
-            if(end == NULL){
-                tail->next = ptr;
-                return dummy->next;
-            }
-        }
-        auto nextStart = end->next;
-        end->next = NULL;
-
-
-        reverseList(ptr);
-        tail->next = end;
-        tail = ptr;
-
-        ptr = nextStart;
+    while(fast != NULL and fast->next != NULL){
+        slow = slow->next;
+        fast = fast->next->next;
     }
 
-    return dummy->next;
+    auto second = reverseList(slow->next);
+
+    slow->next = NULL;
+
+    auto first = head;
+
+    while(second){
+        auto t1 = first->next;
+        auto t2 = second->next;
+
+        first->next = second;
+        second->next = t1;
+
+        first = t1;
+        second = t2;
+    }
+
+
 
 }
 
@@ -104,10 +104,7 @@ int main()
 
     ll.build(n);
 
-    int k;
-    cin >> k;
-
-    ll.head = reverseKGroup(ll.head, k);
+    reorderList(ll.head);
 
     Node* cur = ll.head;
 

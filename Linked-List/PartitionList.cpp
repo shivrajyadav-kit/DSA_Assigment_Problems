@@ -16,25 +16,22 @@ class LinkedList {
 public:
 
     Node* head;
-    Node* tail;
-    vector<Node*> nodes;
 
     LinkedList()
     {
         head = nullptr;
-        tail = nullptr;
     }
 
     void build(int n)
     {
+        Node* tail = nullptr;
+
         for(int i = 0; i < n; i++)
         {
             int x;
             cin >> x;
 
             Node* node = new Node(x);
-
-            nodes.push_back(node);
 
             if(!head)
             {
@@ -49,26 +46,39 @@ public:
     }
 };
 
-Node* detectCycle(Node* head)
+
+
+Node* partition(Node* head, int x)
 {
-    auto slow = head;
-    auto fast = head;
+    auto dummy1 = new Node(-1);
+    auto tail1 = dummy1;
+    auto dummy2 = new Node(-1);
+    auto tail2 = dummy2;
 
-    while(fast && fast->next){
-        slow = slow->next;
-        fast = fast->next->next;
+    auto ptr = head;
 
-        if(slow == fast){
-            slow = head;
+    while(ptr !=  NULL){
 
-            while(slow != fast){
-            slow = slow->next;
-            fast = fast->next;
+        if(ptr->val <x){
+            tail1->next = ptr;
+            tail1 = ptr;
+        }else{
+            tail2->next = ptr;
+            tail2 = ptr;
         }
-        return slow;
+
+        ptr = ptr->next;
     }
-    }
-    return NULL;
+    tail1->next = NULL;
+    tail2->next = NULL;
+
+    tail1->next = dummy2->next;
+
+    head = dummy1->next;
+    delete dummy1;
+    delete dummy2;
+    return head;
+
 }
 
 int main()
@@ -83,26 +93,30 @@ int main()
 
     ll.build(n);
 
-    int pos;
-    cin >> pos;
+    int x;
+    cin >> x;
 
-    if(pos != -1)
-        ll.tail->next = ll.nodes[pos];
+    ll.head = partition(ll.head, x);
 
-    Node* ans = detectCycle(ll.head);
+    Node* cur = ll.head;
 
-    int idx = -1;
+    bool first = true;
 
-    for(int i = 0; i < n; i++)
+    while(cur)
     {
-        if(ll.nodes[i] == ans)
+        if(!first)
         {
-            idx = i;
-            break;
+            cout << ' ';
         }
+
+        first = false;
+
+        cout << cur->val;
+
+        cur = cur->next;
     }
 
-    cout << idx << '\n';
+    cout << '\n';
 
     return 0;
 }

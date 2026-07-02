@@ -1,4 +1,4 @@
-.// Problem: Length of Cycle in a Linked List
+// Problem: Length of Cycle in a Linked List
 
 #include <bits/stdc++.h>
 using namespace std;
